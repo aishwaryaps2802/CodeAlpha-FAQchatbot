@@ -4,8 +4,6 @@ A smart FAQ chatbot built with Python and Flask that understands
 user questions and returns the most relevant answer using NLP 
 techniques like TF-IDF and cosine similarity.
 
-## Live Demo
-Add your deployed link here once hosted.
 
 ## What It Does
 This chatbot takes a user question, processes it using natural 
@@ -29,4 +27,4 @@ similarity scoring.
 - Scikit-learn
 - HTML5, CSS3, Vanilla JavaScript
 
-## Project Structure
+
