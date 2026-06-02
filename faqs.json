@@ -1,0 +1,36 @@
+{
+  "faqs": [
+    {
+      "question": "What is your return policy?",
+      "answer": "You can return any product within 30 days of purchase for a full refund."
+    },
+    {
+      "question": "How do I track my order?",
+      "answer": "Visit the Orders section in your account and click Track to see real-time updates."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept credit cards, debit cards, UPI, and net banking."
+    },
+    {
+      "question": "How do I contact customer support?",
+      "answer": "You can reach us at support@example.com or call 1800-123-456."
+    },
+    {
+      "question": "Can I change my order after placing it?",
+      "answer": "Orders can be modified within 1 hour of placement. Contact support immediately."
+    },
+    {
+      "question": "Do you offer free shipping?",
+      "answer": "Yes, free shipping is available on all orders above Rs. 499."
+    },
+    {
+      "question": "How long does delivery take?",
+      "answer": "Standard delivery takes 3 to 5 business days depending on your location."
+    },
+    {
+      "question": "Is my payment information secure?",
+      "answer": "Yes, all payments are encrypted using SSL and we never store card details."
+    }
+  ]
+}
