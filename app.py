@@ -1,5 +1,6 @@
-# app.py — Flask Web Server for Chat UI
 import nltk
+import os
+
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('punkt_tab')
@@ -16,10 +17,14 @@ def index():
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    data            = request.get_json()
-    user_question   = data.get('question', '')
-    answer          = get_best_answer(user_question, faqs)
-    return jsonify({'answer': answer})
+    try:
+        data          = request.get_json()
+        user_question = data.get('question', '')
+        answer        = get_best_answer(user_question, faqs)
+        return jsonify({'answer': answer})
+    except Exception as e:
+        return jsonify({'answer': f'Error: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
