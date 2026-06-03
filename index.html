@@ -8,9 +8,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: "DM Sans", sans-serif;
       background: #0d0d12;
       display: flex;
       flex-direction: column;
@@ -18,15 +17,13 @@
       align-items: center;
       min-height: 100vh;
     }
-
     h2 {
       color: #c9a84c;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       margin-bottom: 16px;
     }
-
     .chat-wrapper {
       width: 420px;
       height: 620px;
@@ -38,7 +35,6 @@
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0,0,0,0.5);
     }
-
     .chat-header {
       display: flex;
       align-items: center;
@@ -47,7 +43,6 @@
       background: #1c1c2a;
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-
     .bot-avatar {
       width: 42px;
       height: 42px;
@@ -59,10 +54,8 @@
       color: #c9a84c;
       font-size: 18px;
     }
-
     .bot-name   { display: block; font-weight: 600; color: #e8e6f0; font-size: 15px; }
     .bot-status { display: block; font-size: 11px; color: #4ecdc4; }
-
     .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -71,11 +64,8 @@
       flex-direction: column;
       gap: 12px;
     }
-
     .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-track { background: transparent; }
     .chat-messages::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 4px; }
-
     .message {
       max-width: 80%;
       padding: 12px 16px;
@@ -84,19 +74,16 @@
       line-height: 1.6;
       animation: fadeIn 0.3s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .bot-message {
       background: #1c1c2a;
       color: #e8e6f0;
       border-bottom-left-radius: 4px;
       align-self: flex-start;
     }
-
     .user-message {
       background: #c9a84c;
       color: #000;
@@ -104,7 +91,6 @@
       align-self: flex-end;
       font-weight: 500;
     }
-
     .typing {
       display: flex;
       gap: 5px;
@@ -116,7 +102,6 @@
       align-self: flex-start;
       width: fit-content;
     }
-
     .typing span {
       width: 7px;
       height: 7px;
@@ -124,15 +109,30 @@
       background: #7a78a0;
       animation: bounce 1.2s infinite;
     }
-
     .typing span:nth-child(2) { animation-delay: 0.2s; }
     .typing span:nth-child(3) { animation-delay: 0.4s; }
-
     @keyframes bounce {
       0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
       40%           { transform: scale(1);   opacity: 1; }
     }
-
+    .suggested-questions {
+      padding: 0 20px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .suggestion {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.3);
+      color: #c9a84c;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: "DM Sans", sans-serif;
+      transition: all 0.3s;
+    }
+    .suggestion:hover { background: rgba(201,168,76,0.15); }
     .chat-input-bar {
       display: flex;
       gap: 10px;
@@ -140,7 +140,6 @@
       border-top: 1px solid rgba(255,255,255,0.07);
       background: #1c1c2a;
     }
-
     .chat-input-bar input {
       flex: 1;
       background: #0d0d12;
@@ -148,15 +147,13 @@
       color: #e8e6f0;
       padding: 11px 16px;
       border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: "DM Sans", sans-serif;
       font-size: 14px;
       outline: none;
       transition: border-color 0.3s;
     }
-
-    .chat-input-bar input:focus { border-color: #c9a84c; }
+    .chat-input-bar input:focus  { border-color: #c9a84c; }
     .chat-input-bar input::placeholder { color: #7a78a0; }
-
     .chat-input-bar button {
       background: #c9a84c;
       border: none;
@@ -172,43 +169,15 @@
       transition: 0.3s;
       flex-shrink: 0;
     }
-
     .chat-input-bar button:hover { background: #e8c97a; transform: scale(1.05); }
-
-    .suggested-questions {
-      padding: 0 20px 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .suggestion {
-      background: transparent;
-      border: 1px solid rgba(201,168,76,0.3);
-      color: #c9a84c;
-      padding: 6px 12px;
-      border-radius: 50px;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.3s;
-    }
-
-    .suggestion:hover {
-      background: rgba(201,168,76,0.15);
-    }
-
     @media (max-width: 480px) {
       .chat-wrapper { width: 95vw; height: 90vh; border-radius: 14px; }
     }
   </style>
 </head>
 <body>
-
   <h2>FAQ Assistant — CodeAlpha Internship</h2>
-
   <div class="chat-wrapper">
-
     <div class="chat-header">
       <div class="bot-avatar">
         <i class="fa-solid fa-robot"></i>
@@ -218,96 +187,74 @@
         <span class="bot-status">● Online</span>
       </div>
     </div>
-
     <div class="chat-messages" id="chatMessages">
       <div class="message bot-message">
         Hello! I am your FAQ Assistant. Ask me anything and I will find the best answer for you.
       </div>
     </div>
-
     <div class="suggested-questions">
-      <button class="suggestion" onclick="askSuggestion('What is your return policy?')">Return policy</button>
-      <button class="suggestion" onclick="askSuggestion('How do I track my order?')">Track order</button>
-      <button class="suggestion" onclick="askSuggestion('What payment methods do you accept?')">Payment</button>
-      <button class="suggestion" onclick="askSuggestion('Do you offer free shipping?')">Shipping</button>
+      <button class="suggestion" onclick="sendMessage('What is your return policy?')">Return policy</button>
+      <button class="suggestion" onclick="sendMessage('How do I track my order?')">Track order</button>
+      <button class="suggestion" onclick="sendMessage('What payment methods do you accept?')">Payment</button>
+      <button class="suggestion" onclick="sendMessage('Do you offer free shipping?')">Free shipping</button>
     </div>
-
     <div class="chat-input-bar">
-      <input
-        type="text"
-        id="userInput"
-        placeholder="Type your question here..."
-        autocomplete="off"
-      />
-      <button id="sendBtn">
-        <i class="fa-solid fa-paper-plane"></i>
-      </button>
+      <input type="text" id="userInput" placeholder="Type your question here..." autocomplete="off"/>
+      <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
-
   </div>
-
   <script>
-    const chatMessages = document.getElementById('chatMessages');
-    const userInput    = document.getElementById('userInput');
-    const sendBtn      = document.getElementById('sendBtn');
+    const chatMessages = document.getElementById("chatMessages");
+    const userInput    = document.getElementById("userInput");
+    const sendBtn      = document.getElementById("sendBtn");
 
     function addMessage(text, sender) {
-      const div = document.createElement('div');
-      div.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+      const div = document.createElement("div");
+      div.classList.add("message", sender === "user" ? "user-message" : "bot-message");
       div.textContent = text;
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function showTyping() {
-      const div = document.createElement('div');
-      div.classList.add('typing');
-      div.id = 'typing';
-      div.innerHTML = '<span></span><span></span><span></span>';
+      const div = document.createElement("div");
+      div.classList.add("typing");
+      div.id = "typing";
+      div.innerHTML = "<span></span><span></span><span></span>";
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function removeTyping() {
-      const typing = document.getElementById('typing');
-      if (typing) typing.remove();
+      const t = document.getElementById("typing");
+      if (t) t.remove();
     }
 
     async function sendMessage(text) {
       const question = text || userInput.value.trim();
       if (!question) return;
-
-      addMessage(question, 'user');
-      userInput.value = '';
+      addMessage(question, "user");
+      userInput.value = "";
       showTyping();
-
       try {
-        const res = await fetch('/ask', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res  = await fetch("/ask", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
           body:    JSON.stringify({ question: question })
         });
-
         const data = await res.json();
         removeTyping();
-        addMessage(data.answer, 'bot');
-
+        addMessage(data.answer, "bot");
       } catch (err) {
         removeTyping();
-        addMessage('Connection error. Please try again.', 'bot');
-        console.error('Error:', err);
+        addMessage("Connection error. Please try again.", "bot");
       }
     }
 
-    function askSuggestion(question) {
-      sendMessage(question);
-    }
-
-    sendBtn.addEventListener('click', () => sendMessage());
-    userInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendMessage();
+    sendBtn.addEventListener("click", () => sendMessage());
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
     });
   </script>
-
 </body>
 </html>
