@@ -5,7 +5,7 @@ nltk.download('punkt',     quiet=True)
 nltk.download('stopwords', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from chatbot import load_faqs, get_best_answer
 
 app  = Flask(__name__)
@@ -13,21 +13,208 @@ faqs = load_faqs()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return '''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: #0d0d12;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h2 { color: #c9a84c; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .chat-wrapper {
+      width: 420px; height: 620px;
+      background: #15151f;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 18px 20px;
+      background: #1c1c2a;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .bot-avatar {
+      width: 42px; height: 42px;
+      background: rgba(201,168,76,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #c9a84c; font-size: 18px;
+    }
+    .bot-name   { display: block; font-weight: 600; color: #e8e6f0; font-size: 15px; }
+    .bot-status { display: block; font-size: 11px; color: #4ecdc4; }
+    .chat-messages {
+      flex: 1; overflow-y: auto;
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 4px; }
+    .message {
+      max-width: 80%; padding: 12px 16px;
+      border-radius: 16px; font-size: 14px; line-height: 1.6;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bot-message {
+      background: #1c1c2a; color: #e8e6f0;
+      border-bottom-left-radius: 4px; align-self: flex-start;
+    }
+    .user-message {
+      background: #c9a84c; color: #000;
+      border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 500;
+    }
+    .typing {
+      display: flex; gap: 5px; align-items: center;
+      padding: 14px 16px; background: #1c1c2a;
+      border-radius: 16px; border-bottom-left-radius: 4px;
+      align-self: flex-start; width: fit-content;
+    }
+    .typing span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #7a78a0; animation: bounce 1.2s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+      40%           { transform: scale(1);   opacity: 1; }
+    }
+    .suggested-questions {
+      padding: 0 20px 12px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .suggestion {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.3);
+      color: #c9a84c; padding: 6px 12px;
+      border-radius: 50px; font-size: 12px;
+      cursor: pointer; font-family: "DM Sans", sans-serif;
+      transition: all 0.3s;
+    }
+    .suggestion:hover { background: rgba(201,168,76,0.15); }
+    .chat-input-bar {
+      display: flex; gap: 10px; padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      background: #1c1c2a;
+    }
+    .chat-input-bar input {
+      flex: 1; background: #0d0d12;
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #e8e6f0; padding: 11px 16px;
+      border-radius: 50px; font-family: "DM Sans", sans-serif;
+      font-size: 14px; outline: none; transition: border-color 0.3s;
+    }
+    .chat-input-bar input:focus { border-color: #c9a84c; }
+    .chat-input-bar input::placeholder { color: #7a78a0; }
+    .chat-input-bar button {
+      background: #c9a84c; border: none; color: #000;
+      width: 44px; height: 44px; border-radius: 50%;
+      cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.3s; flex-shrink: 0;
+    }
+    .chat-input-bar button:hover { background: #e8c97a; transform: scale(1.05); }
+    @media (max-width: 480px) {
+      .chat-wrapper { width: 95vw; height: 90vh; border-radius: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <h2>FAQ Assistant — CodeAlpha Internship</h2>
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <div class="bot-avatar"><i class="fa-solid fa-robot"></i></div>
+      <div class="bot-info">
+        <span class="bot-name">FAQ Assistant</span>
+        <span class="bot-status">● Online</span>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot-message">
+        Hello! I am your FAQ Assistant. Ask me anything and I will find the best answer for you.
+      </div>
+    </div>
+    <div class="suggested-questions">
+      <button class="suggestion" onclick="askSuggestion(this.textContent)">Return policy</button>
+      <button class="suggestion" onclick="askSuggestion(this.textContent)">Track my order</button>
+      <button class="suggestion" onclick="askSuggestion(this.textContent)">Payment methods</button>
+      <button class="suggestion" onclick="askSuggestion(this.textContent)">Free shipping</button>
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" id="userInput" placeholder="Type your question here..." autocomplete="off"/>
+      <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+  <script>
+    const chatMessages = document.getElementById("chatMessages");
+    const userInput    = document.getElementById("userInput");
+    const sendBtn      = document.getElementById("sendBtn");
+    function addMessage(text, sender) {
+      const div = document.createElement("div");
+      div.classList.add("message", sender === "user" ? "user-message" : "bot-message");
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function showTyping() {
+      const div = document.createElement("div");
+      div.classList.add("typing");
+      div.id = "typing";
+      div.innerHTML = "<span></span><span></span><span></span>";
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function removeTyping() {
+      const t = document.getElementById("typing");
+      if (t) t.remove();
+    }
+    async function sendMessage(text) {
+      const question = text || userInput.value.trim();
+      if (!question) return;
+      addMessage(question, "user");
+      userInput.value = "";
+      showTyping();
+      try {
+        const res  = await fetch("/ask", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ question: question })
+        });
+        const data = await res.json();
+        removeTyping();
+        addMessage(data.answer, "bot");
+      } catch (err) {
+        removeTyping();
+        addMessage("Connection error. Please try again.", "bot");
+      }
+    }
+    function askSuggestion(text) { sendMessage(text); }
+    sendBtn.addEventListener("click", () => sendMessage());
+    userInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
+  </script>
+</body>
+</html>'''
 
 @app.route('/ask', methods=['POST'])
 def ask():
     try:
         data          = request.get_json()
         user_question = data.get('question', '')
-        if not user_question:
-            return jsonify({'answer': 'Please type a question.'})
-        answer = get_best_answer(user_question, faqs)
-        return jsonify({'answer': answer})
-    except Exception as e:
-        print(f"ERROR: {str(e)}")
-        return jsonify({'answer': f'Error: {str(e)}'}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port, debug=False)
